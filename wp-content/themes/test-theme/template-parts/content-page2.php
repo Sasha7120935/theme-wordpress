@@ -21,8 +21,8 @@ get_header();
                     <?php
                     $id = get_the_ID();
                     $posts = get_field('home_1', $id);
-                    if ($posts):
-                        while (the_repeater_field('slides', $id)):
+                    if ( $posts ):
+                        while ( the_repeater_field('slides', $id ) ):
                             ?>
                             <li>
                                 <img src="<?php echo $sub_field_slider = get_sub_field('slider'); ?>"/>
@@ -50,10 +50,8 @@ get_header();
                 'posts_per_page' => 1
             ];
             $blog_query = new WP_Query($args);
-            ?>
-            <?php
-            if ($blog_query->have_posts()) :
-                while ($blog_query->have_posts()) : $blog_query->the_post();
+            if ( $blog_query->have_posts() ) :
+                while ( $blog_query->have_posts() ) : $blog_query->the_post();
                     ?>
                     <div class="introduction">
                         <h1><?php the_title() ?><p><?php the_content() ?></p></h1>
@@ -63,20 +61,16 @@ get_header();
                 <?php
                 endwhile;
             endif;
-            ?>
-                <?php
                 $args = [
                     'post_type' => 'post',
                     'posts_per_page' => 6
                 ];
                 $blog_query = new WP_Query($args);
-                ?>
-                <?php
                 if ($blog_query->have_posts()) :
                     ?>
             <ul class="columns dropcap">
                 <?php
-                    while ($blog_query->have_posts()) : $blog_query->the_post();
+                    while ( $blog_query->have_posts() ) : $blog_query->the_post();
                         ?>
                         <li class="column column33">
                             <div>
@@ -99,7 +93,7 @@ get_header();
             <div class="portfolio">
             <?php
             $categories = get_categories();
-                foreach ($categories as $category) {
+                foreach ( $categories as $category ) {
                     ?>
                     <p class="all_projects"><a href="<?php get_category_link($category->name) ?>">View all projects</a></p>
                     <?php
@@ -114,7 +108,6 @@ get_header();
                         'posts_per_page' => 4
                     ];
                     $portfolio_query = new WP_Query($args);
-                    ?> <?php
                     if ($portfolio_query->have_posts()) :
                         while ($portfolio_query->have_posts()) : $portfolio_query->the_post();
                             ?>

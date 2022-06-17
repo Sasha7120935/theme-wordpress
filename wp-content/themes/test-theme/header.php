@@ -46,13 +46,12 @@
                         <div class="clear"></div>
 
                                   <?php
-                                    $args = array(
+                                    $args = array (
                                         'theme_location' => 'primary_menu',
                                         'container' => 'ul',
                                         'container_class' => 'nav-primary-menu',
                                         'menu_id' => 'top_menu'
                                     );
-
                                     wp_nav_menu($args);
                                     ?>
                     </div>
@@ -60,7 +59,7 @@
                 </div>
                 <div class="breadcrumb">
                     <?php
-                    if(function_exists('bcn_display'))
+                    if( function_exists ('bcn_display' ) )
                     {
                         bcn_display();
                     }
