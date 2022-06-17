@@ -23,7 +23,9 @@
 		<!-- END FOOTER -->
 	</div>
 </div>
-<?php wp_footer(); ?>
+<?php
+get_sidebar('lower');
+wp_footer(); ?>
 
 </body>
 </html>

@@ -151,6 +151,15 @@ function test_theme_widgets_init() {
             'after_widget'  => '</div></div></section>',
         )
     );
+    register_sidebar(
+        array(
+            'name'          => esc_html__( 'Header Sidebar', 'test-theme' ),
+            'id'            => 'sidebar-header',
+            'description'   => esc_html__( 'Add widgets here.', 'test-theme' ),
+            'before_widget' => '',
+            'after_widget'  => '',
+        )
+    );
 }
 add_action( 'widgets_init', 'test_theme_widgets_init' );
 
@@ -167,13 +176,14 @@ function test_theme_scripts() {
 	wp_enqueue_style( 'prettyPhoto', get_template_directory_uri() . '/assets/css/prettyPhoto.css', array(), _S_VERSION );
 	wp_style_add_data( 'test-theme-style', 'rtl', 'replace' );
 	wp_enqueue_script( 'test-theme-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
-    wp_enqueue_script('min', get_template_directory_uri() . '/assets/js/jquery.min.js', array(), _S_VERSION, true  );
-    wp_enqueue_script('ui', get_template_directory_uri() . '/assets/js/jquery.ui.min.js', array(), _S_VERSION, true  );
-    wp_enqueue_script('flexslider', get_template_directory_uri() . '/assets/js/jquery.flexslider.min.js', array(), _S_VERSION, true  );
-    wp_enqueue_script('prettyphoto', get_template_directory_uri() . '/assets/js/jquery.prettyphoto.min.js', array(), _S_VERSION, true  );
-    wp_enqueue_script('stylesheettoggle', get_template_directory_uri() . '/assets/js/jquery.stylesheettoggle.js', array(), _S_VERSION, true  );
-    wp_enqueue_script('onload', get_template_directory_uri() . '/assets/js/onload.js', array(), _S_VERSION, true  );
-    wp_enqueue_script('quicksand', get_template_directory_uri() . '/assets/js/jquery.quicksand.js', array(), _S_VERSION, true  );
+    wp_enqueue_script('min', get_template_directory_uri() . '/assets/js/jquery.min.js', array('jquery','test-theme-navigation'), _S_VERSION, true  );
+    wp_enqueue_script('ui', get_template_directory_uri() . '/assets/js/jquery.ui.min.js', array('jquery','min'), _S_VERSION, true  );
+    wp_enqueue_script('flexslider', get_template_directory_uri() . '/assets/js/jquery.flexslider.min.js', array('jquery','ui'), _S_VERSION, true  );
+    wp_enqueue_script('prettyphoto', get_template_directory_uri() . '/assets/js/jquery.prettyphoto.min.js', array('jquery','flexslider'), _S_VERSION, true  );
+    wp_enqueue_script('stylesheettoggle', get_template_directory_uri() . '/assets/js/jquery.stylesheettoggle.js', array('jquery','prettyphoto'), _S_VERSION, true  );
+    wp_enqueue_script('onload', get_template_directory_uri() . '/assets/js/onload.js', array('jquery','stylesheettoggle'), _S_VERSION, true  );
+    wp_enqueue_script('quicksand', get_template_directory_uri() . '/assets/js/jquery.quicksand.js', array('jquery','onload'), _S_VERSION, true  );
+    wp_enqueue_script('main', get_template_directory_uri() . '/assets/js/main.js', array('jquery','quicksand'), _S_VERSION, true  );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -203,12 +213,11 @@ require get_template_directory() . '/inc/customizer.php';
 /**
  * Widget Setting
  */
-//require get_template_directory() . '/widgets/widget-contact.php';
-require get_template_directory() . '/widgets/widget-about.php';
-require get_template_directory() . '/widgets/widget-categories.php';
-require get_template_directory() . '/widgets/widget-posts.php';
-require get_template_directory() . '/widgets/widget-contact.php';
-require get_template_directory() . '/widgets/widget.php';
+require_once get_template_directory() . '/widgets/widget-about.php';
+require_once get_template_directory() . '/widgets/widget-categories.php';
+require_once get_template_directory() . '/widgets/widget-posts.php';
+require_once get_template_directory() . '/widgets/widget-contact.php';
+require_once get_template_directory() . '/widgets/widget.php';
 
 /**
  * Load Jetpack compatibility file.
@@ -228,3 +237,28 @@ function theme_support_setup(){
 
 }
 add_action('after_setup_theme','theme_support_setup');
+function misha_my_load_more_scripts() {
+
+    global $wp_query;
+
+    // In most cases it is already included on the page and this line can be removed
+    wp_enqueue_script('jquery');
+
+    // register our main script but do not enqueue it yet
+    wp_register_script( 'my_loadmore', get_stylesheet_directory_uri() . '/myloadmore.js', array('jquery') );
+
+    // now the most interesting part
+    // we have to pass parameters to myloadmore.js script but we can get the parameters values only in PHP
+    // you can define variables directly in your HTML but I decided that the most proper way is wp_localize_script()
+    wp_localize_script( 'my_loadmore', 'misha_loadmore_params', array(
+        'ajaxurl' => site_url() . '/wp-admin/admin-ajax.php', // WordPress AJAX
+        'posts' => json_encode( $wp_query->query_vars ), // everything about your loop is here
+        'current_page' => get_query_var( 'paged' ) ? get_query_var('paged') : 1,
+        'max_page' => $wp_query->max_num_pages
+    ) );
+
+    wp_enqueue_script( 'my_loadmore' );
+}
+
+add_action( 'wp_enqueue_scripts', 'misha_my_load_more_scripts' );
+add_image_size( 'homepage-thumb', 100, 9999, true );

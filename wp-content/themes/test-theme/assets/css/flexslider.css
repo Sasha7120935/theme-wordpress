@@ -41,12 +41,12 @@ html[xmlns] .slides {display: block;}
 .flex-container {zoom: 1; position: relative;}
 
 /* Caption style */
-.flex-caption {background: url(../gfx/top_caption.png) repeat;}
+.flex-caption {background: url(../../assets/img/top_caption.png) repeat;}
 .flex-caption {padding: 34px 30px; width: 242px; /*height: 140px;*/ position: absolute; left: 23px; bottom: 23px;}
 
 /* Direction Nav */
 .flex-direction-nav li {display:inline;}
-.flex-direction-nav li a {width: 40px; height: 40px; margin: -13px 0 0; display: block; background: url(../gfx/top_direction_nav.png) no-repeat 0 0; position: absolute; cursor: pointer; text-indent: -9999px;}
+.flex-direction-nav li a {width: 40px; height: 40px; margin: -13px 0 0; display: block; background: url(../../assets/img/top_direction_nav.png) no-repeat 0 0; position: absolute; cursor: pointer; text-indent: -9999px;}
 .flex-direction-nav li .next {background-position: 0 -40px; top: 415px; right: 23px;}
 .flex-direction-nav li .prev {top: 373px; right: 23px;}
 .flex-direction-nav li .disabled {opacity: .3; filter:alpha(opacity=30); cursor: default;}

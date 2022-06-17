@@ -9,9 +9,9 @@ class Posts_Widget extends WP_Widget {
      */
     function __construct() {
         parent::__construct(
-            'posts_widget', // Base ID
-            esc_html__( 'Posts', 'text_domain' ), // Name
-            array( 'description' => esc_html__( 'Posts for Test Theme', 'text_domain' ), ) // Args
+            'posts_widget',
+            esc_html__( 'Posts', 'text_domain' ),
+            array( 'description' => esc_html__( 'Posts for Test Theme', 'text_domain' ), )
         );
     }
 
@@ -26,20 +26,25 @@ class Posts_Widget extends WP_Widget {
     public function widget( $args, $instance ) {
         $title = apply_filters('widget_title', $instance['title']);
         echo $args['before_widget'];
-        if ( ! empty( $title ) )
+        if ( ! empty( $title ) ) {
             echo $args['before_title'] . $title . $args['after_title'];
-        $args = [
-            'post_type' => 'portfolio',
-            'posts_per_page' => $instance['number']
-        ];
-        $events_query = new WP_Query( $args );
+            $args = [
+                'post_type' => 'portfolio',
+                'posts_per_page' => $instance['number']
+            ];
+            $events_query = new WP_Query($args);
+        }
         ?>
         <div class="posts-widget">
             <?php
         if ( $events_query->have_posts() ) :
             while ( $events_query->have_posts() ) : $events_query->the_post();
         ?>
-                <div class="post-image"><?php echo get_the_post_thumbnail() ?></div>
+                <div class="post-image"><?php
+                    if ( has_post_thumbnail() ) {
+                       the_post_thumbnail( 'homepage-thumb' );
+                    } ?>
+                </div>
             <div>
                 <h3 class="post-custom-widget" style="color: white;width: 220px;"><a href="<?php the_permalink();?>"><?php echo get_the_content() ?></a></h3>
             </div>
@@ -65,7 +70,7 @@ class Posts_Widget extends WP_Widget {
      * @param array $instance Previously saved values from database.
      */
     public function form( $instance ) {
-        $number = @ $instance['number'] ?: '';
+        $number = @ $instance['number'] ? : '';
         $instance = wp_parse_args((array)$instance);
         ?>
         <p>
